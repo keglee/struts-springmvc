@@ -7,7 +7,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <struts.version>2.3.16</struts.version>
+        <struts.version>2.3.34</struts.version>
         <spring.version>4.3.25.RELEASE</spring.version>
         <servlet.version>3.1.0</servlet.version>
     </properties>
