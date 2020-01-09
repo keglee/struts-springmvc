@@ -1,6 +1,5 @@
 package com.iversonx.struts_springmvc.config;
 
-import org.springframework.web.SpringServletContainerInitializer;
 import org.springframework.web.context.AbstractContextLoaderInitializer;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -8,14 +7,14 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.*;
 import java.util.EnumSet;
 
-public class WebInitializer extends AbstractContextLoaderInitializer {
+public class WebInitializer /*extends AbstractContextLoaderInitializer*/ {
 
     public void onStartup(ServletContext servletContext) throws ServletException {
-        super.onStartup(servletContext);
+        // super.onStartup(servletContext);
         struts(servletContext);
     }
 
-    @Override
+    //@Override
     protected WebApplicationContext createRootApplicationContext() {
         AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
         ctx.register(ApplicationConfig.class);
@@ -26,5 +25,4 @@ public class WebInitializer extends AbstractContextLoaderInitializer {
         FilterRegistration.Dynamic filter = servletContext.addFilter("struts2", "org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter");
         filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "*.action");
     }
-
 }

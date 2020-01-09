@@ -17,6 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @RequestMapping("show.action")
     public String show(Model model,
                        @RequestParam(required = false, defaultValue = "Hello SpringMVC") String username,
                        @RequestParam(required = false, defaultValue = "123456") String password) {
