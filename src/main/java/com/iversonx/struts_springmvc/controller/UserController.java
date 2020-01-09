@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @date 2020/1/9 10:46
  */
 @Controller
+@RequestMapping("/mvc")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("show.action")
+    @RequestMapping("/show.action")
     public String show(Model model,
                        @RequestParam(required = false, defaultValue = "Hello SpringMVC") String username,
                        @RequestParam(required = false, defaultValue = "123456") String password) {
