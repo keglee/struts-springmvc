@@ -1,11 +1,6 @@
 package com.iversonx.struts_springmvc.config;
 
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
-
-import javax.servlet.*;
-import java.util.EnumSet;
 
 /**
  * @author Lijie
