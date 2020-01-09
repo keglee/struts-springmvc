@@ -1,1 +1,1 @@
-com.iversonx.struts_springmvc.config.WebInitializer
+org.springframework.web.SpringServletContainerInitializer

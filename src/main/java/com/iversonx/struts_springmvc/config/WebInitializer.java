@@ -1,16 +1,28 @@
 package com.iversonx.struts_springmvc.config;
 
+import org.springframework.web.context.AbstractContextLoaderInitializer;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.*;
 import java.util.EnumSet;
-import java.util.Set;
 
-public class WebInitializer implements ServletContainerInitializer {
+public class WebInitializer /*extends AbstractContextLoaderInitializer*/ {
 
-    public void onStartup(Set<Class<?>> set, ServletContext ctx) throws ServletException {
-        ctx.setInitParameter("contextConfigLocation", "classpath:application.xml");
-        ctx.addListener("org.springframework.web.context.ContextLoaderListener");
-        FilterRegistration.Dynamic filter = ctx.addFilter("struts2", "org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter");
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        // super.onStartup(servletContext);
+        struts(servletContext);
+    }
+
+    //@Override
+    protected WebApplicationContext createRootApplicationContext() {
+        AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
+        ctx.register(ApplicationConfig.class);
+        return ctx;
+    }
+
+    private void struts(ServletContext servletContext) {
+        FilterRegistration.Dynamic filter = servletContext.addFilter("struts2", "org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter");
         filter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), true, "*.action");
     }
 }
