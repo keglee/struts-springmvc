@@ -7,6 +7,8 @@ Struts2迁移至SpringMVC
 
 第三步: [不改struts2代码和配置的前提下迁移到springmvc]()
 
+1. 将action添加spring容器中
+
 相关博文: 
 - [BeanDefinition扩展点](https://www.cnblogs.com/lxyit/p/10160782.html)
 - [Spring生命周期中的各个扩展点](https://youyou-tech.com/2019/10/03/Spring生命周期中的各个扩展点/)

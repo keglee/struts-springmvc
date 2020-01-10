@@ -39,7 +39,7 @@ public class ActionMappingHandlerMapping extends RequestMappingHandlerMapping {
                         @Override
                         public RequestMappingInfo inspect(Method method) {
                             try {
-                                return getActionMappingForMethod(method, userType);
+                                return getMappingForMethod(method, userType);
                             }
                             catch (Throwable ex) {
                                 throw new IllegalStateException("Invalid mapping on handler class [" +
@@ -65,9 +65,9 @@ public class ActionMappingHandlerMapping extends RequestMappingHandlerMapping {
         return createActionRequestMappingInfo(method);
     }
 
-    private RequestMappingInfo createActionRequestMappingInfo(Method element) {
+    private RequestMappingInfo createActionRequestMappingInfo(AnnotatedElement element) {
 
-        RequestMapping requestMapping = new RequestMapping();// AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
+        RequestMapping requestMapping = null;// AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
         RequestCondition<?> condition = (element instanceof Class ?
                 getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
         return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);
