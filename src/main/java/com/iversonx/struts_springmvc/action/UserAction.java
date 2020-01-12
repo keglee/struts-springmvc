@@ -3,9 +3,7 @@ package com.iversonx.struts_springmvc.action;
 import com.iversonx.struts_springmvc.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
-@Controller
 public class UserAction extends ActionSupport {
 
     @Autowired

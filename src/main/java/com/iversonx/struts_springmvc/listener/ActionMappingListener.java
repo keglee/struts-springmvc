@@ -1,39 +1,17 @@
 package com.iversonx.struts_springmvc.listener;
 
-import com.iversonx.struts_springmvc.action.UserAction;
-import com.iversonx.struts_springmvc.struts.StrutsXmlConfigurationProvider;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ObjectFactory;
-import com.opensymphony.xwork2.config.Configuration;
-import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
-import com.opensymphony.xwork2.config.entities.PackageConfig;
-import com.opensymphony.xwork2.config.impl.DefaultConfiguration;
-import com.opensymphony.xwork2.inject.Container;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts2.dispatcher.Dispatcher;
-import org.apache.struts2.dispatcher.mapper.ActionMapper;
-import org.apache.struts2.dispatcher.mapper.ActionMapping;
-import org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.mvc.condition.*;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import javax.servlet.ServletContext;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import static com.sun.org.apache.xml.internal.security.keys.keyresolver.KeyResolver.iterator;
+import java.util.List;
 
 /**
  * 在容器启动后，动态添加struts action到RequestMapping
@@ -46,25 +24,13 @@ public class ActionMappingListener implements ApplicationListener<ContextRefresh
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        ServletContext servletContext = ((WebApplicationContext)event.getApplicationContext()).getServletContext();
-        Dispatcher dispatcher = new Dispatcher(servletContext, new HashMap<>());
-        dispatcher.init();
-        Container container = dispatcher.getContainer();
-        ConfigurationManager configurationManager = dispatcher.getConfigurationManager();
-        Map<String, PackageConfig> packageConfigMap = configurationManager.getConfiguration().getPackageConfigs();
+        ApplicationContext context = event.getApplicationContext();
+        registerMapping(context);
+        /*AnnotationConfigWebApplicationContext context = (AnnotationConfigWebApplicationContext)event.getApplicationContext();
+        ServletContext servletContext = context.getServletContext();*/
 
-        Set<Map.Entry<String, PackageConfig>> entrySet = packageConfigMap.entrySet();
-        for(Map.Entry<String, PackageConfig> item : entrySet) {
-            PackageConfig packageConfig = item.getValue();
-            Map<String, ActionConfig> actionConfigMap = packageConfig.getAllActionConfigs();
-            logger.info(actionConfigMap);
-        }
-        // ActionMapper actionMapper = container.getInstance(ActionMapper.class);
-        // ActionMapping actionMapping = actionMapper.getMappingFromActionName("show");
 
-        logger.info("OK");
-        // Dispatcher dispatcher = new Dispatcher(servletContext, new HashMap<>());
-        // dispatcher.init();
+
         /*
         logger.info("ActionMappingListener ");
         ApplicationContext context = event.getApplicationContext();
@@ -92,4 +58,30 @@ public class ActionMappingListener implements ApplicationListener<ContextRefresh
         }
 */
     }
+
+    private void registerMapping(ApplicationContext context) {
+        List<ActionConfig> actionConfigs = (List<ActionConfig>)context.getBean("actionConfigs");
+
+        if(actionConfigs != null && !actionConfigs.isEmpty()) {
+            for(ActionConfig actionConfig : actionConfigs) {
+                RequestMappingHandlerMapping requestMappingHandlerMapping = context.getBean(RequestMappingHandlerMapping.class);
+                String methodName = actionConfig.getMethodName();
+                RequestMappingInfo requestMappingInfo = RequestMappingInfo.paths(methodName + "")
+                        .methods(RequestMethod.GET, RequestMethod.POST)
+                        .mappingName(actionConfig.getClassName())
+                        .build();
+                String className = actionConfig.getClassName();
+                Object action = context.getBean(className);
+                try {
+                    Method targetMethod = action.getClass().getMethod(methodName);
+                    // registerMapping的第二个参数要是beanName，而不是具体bean实例，否则Action无法使用原型
+                    requestMappingHandlerMapping.registerMapping(requestMappingInfo, className, targetMethod);
+                } catch (NoSuchMethodException e) {
+                    logger.info(e);
+                }
+            }
+        }
+    }
+
+
 }

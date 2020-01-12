@@ -2,6 +2,8 @@ package com.iversonx.struts_springmvc.controller;
 
 import com.iversonx.struts_springmvc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @date 2020/1/9 10:46
  */
 @Controller
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @RequestMapping("/mvc")
 public class UserController {
     @Autowired

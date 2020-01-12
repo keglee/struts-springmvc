@@ -1,9 +1,13 @@
 package com.iversonx.struts_springmvc.config;
 
 import com.iversonx.struts_springmvc.extend.ActionBeanDefinitionRegistryPostProcessor;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Lijie
@@ -14,7 +18,13 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan("com.iversonx.struts_springmvc")
 public class ApplicationConfig {
 
-    public ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor() {
+    @Bean
+    public static ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor() {
         return new ActionBeanDefinitionRegistryPostProcessor();
+    }
+
+    @Bean
+    public List<ActionConfig> actionConfigs() {
+        return new ArrayList<>(256);
     }
 }
