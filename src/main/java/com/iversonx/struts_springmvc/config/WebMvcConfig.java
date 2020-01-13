@@ -1,6 +1,6 @@
 package com.iversonx.struts_springmvc.config;
 
-import com.iversonx.struts_springmvc.extend.ActionMappingHandlerMapping;
+import com.iversonx.struts_springmvc.extend.ActionRequestMappingHandlerMapping;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
@@ -26,6 +26,6 @@ public class WebMvcConfig extends DelegatingWebMvcConfiguration {
 
     @Override
     protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
-        return new ActionMappingHandlerMapping();
+        return new ActionRequestMappingHandlerMapping();
     }
 }

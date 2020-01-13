@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -19,10 +20,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 读取struts配置，将ActionConfig转换为BeanDefinition
@@ -31,12 +29,11 @@ import java.util.Set;
  * @date 2020/1/9 16:51
  */
 public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
-    private final Log logger = LogFactory.getLog(ActionMappingListener.class);
     private AnnotationConfigWebApplicationContext context;
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         // 调用struts2的Dispatcher进行初始化，主要目的是为了使用struts2来解析struts xml文件，这样就不用自己重新写解析xml代码
-        ServletContext servletContext = new MockServletContext();// context.getServletContext();
+        ServletContext servletContext = new MockServletContext();
         Dispatcher dispatcher = new Dispatcher(servletContext, new HashMap<>());
         dispatcher.init();
 
@@ -46,25 +43,27 @@ public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinition
         Map<String, PackageConfig> packageConfigMap = configurationManager.getConfiguration().getPackageConfigs();
         Set<Map.Entry<String, PackageConfig>> entrySet = packageConfigMap.entrySet();
         // 遍历struts2的package配置
-        List<ActionConfig> actionConfigs = context.getBean("actionConfigs", List.class);
+        Map<String, Map<String, ActionConfig>> actionConfigs = context.getBean("actionConfigMap", Map.class);
         for(Map.Entry<String, PackageConfig> item : entrySet) {
             PackageConfig packageConfig = item.getValue();
             // 遍历package下的action
             Map<String, ActionConfig> actionConfigMap = packageConfig.getAllActionConfigs();
-            for(Map.Entry<String, ActionConfig> entry : actionConfigMap.entrySet()) {
-                ActionConfig actionConfig = entry.getValue();
-                logger.info("Namespace [" + packageConfig.getNamespace() + "], Action[" + actionConfig.getClassName() + "], url [" + actionConfig.getName() + "], method [" + actionConfig.getMethodName() +"]");
-                registerBean(registry, actionConfig);
-                actionConfigs.add(actionConfig);
-                // 此处进行注册RequestMapping，
-                // 会报Factory method 'mvcUriComponentsContributor' threw exception; nested exception is java.lang.IllegalArgumentException:
-                // 'uriComponentsContributors' must not be null
-                // 因此将RequestMapping的注册放在容器初始化完成之后
-                // registerMapping(actionConfig);
-            }
-        }
 
-        logger.info("OK");
+            if(actionConfigMap != null && !actionConfigMap.isEmpty()) {
+
+                String key = null;
+                for(Map.Entry<String, ActionConfig> entry : actionConfigMap.entrySet()) {
+                    ActionConfig actionConfig = entry.getValue();
+                    if(key == null) {
+                        key = actionConfig.getClassName();
+                    }
+                    registerBean(registry, actionConfig);
+                }
+
+                actionConfigs.put(key, actionConfigMap);
+            }
+
+        }
     }
 
     @Override
@@ -78,10 +77,13 @@ public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinition
      * @param actionConfig ActionConfig
      */
     private void registerBean(BeanDefinitionRegistry registry, ActionConfig actionConfig) {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(actionConfig.getClassName());
-        builder.setScope(BeanDefinition.SCOPE_PROTOTYPE);
-        BeanDefinition beanDefinition = builder.getBeanDefinition();
-        registry.registerBeanDefinition(actionConfig.getClassName(), beanDefinition);
+        String className = actionConfig.getClassName();
+        if(!registry.containsBeanDefinition(className)) {
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(className);
+            builder.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+            BeanDefinition beanDefinition = builder.getBeanDefinition();
+            registry.registerBeanDefinition(className, beanDefinition);
+        }
     }
 
     @Override

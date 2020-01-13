@@ -3,11 +3,7 @@
         "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
         "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
-    <constant name="struts.objectFactory.spring.autoWire" value="type" />
-    <package name="default" namespace="/" extends="struts-default">
-        <action name="show" class="com.iversonx.struts_springmvc.action.UserAction" method="show">
-            <result name="success">show.jsp</result>
-        </action>
+    <package name="lms" namespace="/" extends="struts-default">
         <action name="lms" class="com.iversonx.struts_springmvc.action.LmsAction" method="lms">
             <result name="success">lms.jsp</result>
         </action>

@@ -4,9 +4,12 @@
         "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
     <constant name="struts.objectFactory.spring.autoWire" value="type" />
-    <package name="default" namespace="/" extends="struts-default">
+    <package name="user" namespace="/" extends="struts-default">
         <action name="show" class="com.iversonx.struts_springmvc.action.UserAction" method="show">
             <result name="success">show.jsp</result>
+        </action>
+        <action name="addUser" class="com.iversonx.struts_springmvc.action.UserAction" method="add">
+            <result name="add">add.jsp</result>
         </action>
     </package>
     <include file="/lms/struts.xml"/>

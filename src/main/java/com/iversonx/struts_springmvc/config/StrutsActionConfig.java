@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
  * @version 1.0
  * @date 2020/1/10 10:05
  */
-@Configuration
+// @Configuration
 public class StrutsActionConfig {
 
-    @Bean
+    //@Bean
     public ActionMappingListener actionMappingListener() {
         return new ActionMappingListener();
     }

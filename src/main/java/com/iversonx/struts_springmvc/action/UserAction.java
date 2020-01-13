@@ -18,6 +18,10 @@ public class UserAction extends ActionSupport {
         return "success";
     }
 
+    public String add() {
+        return "success";
+    }
+
     public String getPassword() {
         return password;
     }
