@@ -1,11 +1,13 @@
 # struts-springmvc
 Struts2迁移至SpringMVC
 
-第一步: [搭建Spring,Struts2环境](SPRING-STRUTS.md)
+最终目标：在不改动Action代码的前提下，由SpringMVC来处理所有的Action请求
 
-第二步: [切换到springmvc环境](SPRINGMVC.md)
+第一步：[注册处理方法](REGISTER-HANDLER-METHOD.md)
 
-第三步: [Struts2迁移到springmvc](MIGRATE-TO-SPRINGMVC.md)
+第二步：[将请求参数填充到Action实例中]()
+
+第三步：[处理Action的返回值，使请求能够正确响应]()
 
 相关博文: 
 - [BeanDefinition扩展点](https://www.cnblogs.com/lxyit/p/10160782.html)
