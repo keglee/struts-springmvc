@@ -1,15 +1,86 @@
-# struts-springmvc
-Struts2迁移至SpringMVC
+# 切换到springmvc环境
 
-第一步: [搭建Spring,Struts2环境](SPRING-STRUTS.md)
+## pom依赖
+```xml
+<!-- 1. 添加spring-webmvc依赖 -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>${spring.version}</version>
+</dependency>
 
-第二步: [切换到springmvc环境](SPRINGMVC.md)
+<!-- 2. 注释struts2-spring-plugin依赖 -->
+<!-- <dependency>
+    <groupId>org.apache.struts</groupId>
+    <artifactId>struts2-spring-plugin</artifactId>
+    <version>2.3.35</version>
+    <exclusions>
+        <exclusion>
+            <artifactId>spring-web</artifactId>
+            <groupId>*</groupId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>*</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency> -->
+```
 
-第三步: [不改struts2代码和配置的前提下迁移到springmvc]()
+## 添加springmvc配置
+```java
+@Configuration
+@EnableWebMvc
+@ComponentScan("com.iversonx.struts_springmvc")
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        registry.jsp().prefix("/").suffix(".jsp");
+    }
+}
+```
 
-相关博文: 
-- [BeanDefinition扩展点](https://www.cnblogs.com/lxyit/p/10160782.html)
-- [Spring生命周期中的各个扩展点](https://youyou-tech.com/2019/10/03/Spring生命周期中的各个扩展点/)
-- https://github.com/gameloft9/api-mock-util/blob/master/src/main/java/com/gameloft9/demo/service/RequestMappingService.java
+## 变更WebApplicationInitializer的实现
 
+1. 注释之前的`Webinitializer`类
 
+2. 新增`WebMvcInitializer`类，并继承`AbstractAnnotationConfigDispatcherServletInitializer`, `AbstractAnnotationConfigDispatcherServletInitializer`是`WebApplicationInitializer`的另一个实现。
+
+```java
+public class WebMvcInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{"/"};
+    }
+
+    @Override
+    protected Class<?>[] getRootConfigClasses() {
+        // 指定spring配置
+        return null;;
+    }
+
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        // 指定spring mvc配置
+        return new Class[]{WebMvcConfig.class};
+    }
+}
+```
+
+## 添加Controller进行验证
+```java
+@Controller
+public class UserController {
+    @Autowired
+    private UserService userService;
+
+    @RequestMapping("show.action")
+    public String show(Model model,
+                       @RequestParam(required = false, defaultValue = "Hello SpringMVC") String username,
+                       @RequestParam(required = false, defaultValue = "123456") String password) {
+        model.addAttribute("username", username);
+        return "show";
+    }
+}
+```

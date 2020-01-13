@@ -16,6 +16,7 @@ public class WebMvcInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
+        // TODO 这里设置为空，否则会加载两次，具体原因待查
         return null;
     }
 

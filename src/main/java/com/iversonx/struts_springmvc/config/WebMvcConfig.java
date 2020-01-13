@@ -1,11 +1,10 @@
 package com.iversonx.struts_springmvc.config;
 
-import com.iversonx.struts_springmvc.extend.ActionMappingHandlerMapping;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * 1. 处理器映射（HandlerMapping）用于将一个请求（Request）映射到一个处理器。
@@ -15,17 +14,12 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * 5. 视图(View)
  */
 @Configuration
+@EnableWebMvc
 @ComponentScan("com.iversonx.struts_springmvc")
-public class WebMvcConfig extends DelegatingWebMvcConfiguration {
+public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         registry.jsp().prefix("/").suffix(".jsp");
-    }
-
-
-    @Override
-    protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
-        return new ActionMappingHandlerMapping();
     }
 }
