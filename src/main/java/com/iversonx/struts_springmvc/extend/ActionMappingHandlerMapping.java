@@ -62,15 +62,7 @@ public class ActionMappingHandlerMapping extends RequestMappingHandlerMapping {
     }
 
     private RequestMappingInfo getActionMappingForMethod(Method method, Class<?> handlerType) {
-        return createActionRequestMappingInfo(method);
-    }
-
-    private RequestMappingInfo createActionRequestMappingInfo(Method element) {
-
-        RequestMapping requestMapping = new RequestMapping();// AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
-        RequestCondition<?> condition = (element instanceof Class ?
-                getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
-        return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);
+        return null;
     }
 
 
