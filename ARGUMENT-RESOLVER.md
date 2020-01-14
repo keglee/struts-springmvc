@@ -1,11 +1,9 @@
 # 参数解析
 
-请求处理流程
+## URL参数
 
-DispatcherServlet#doService 》 DispatcherServlet#doDispatch 》 RequestMappingHandlerAdapter#handle
+## 表单参数
 
-》 RequestMappingHandlerAdapter#handleInternal 》 RequestMappingHandlerAdapter#invokeHandlerMethod
+## json参数
 
-》 ServletInvocableHandlerMethod#invokeAndHandle 》 InvocableHandlerMethod#invokeForRequest
-
-》 (获取参数)InvocableHandlerMethod#getMethodArgumentValues
+## 上传文件
