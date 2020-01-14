@@ -41,9 +41,10 @@ public class ActionHandlerInterceptor extends HandlerInterceptorAdapter {
             bw.setConversionService(conversionService);
             // 当嵌套属性为null时，自动创建嵌套属性的实例
             bw.setAutoGrowNestedPaths(true);
+
+            // 从查询字符串或表单数据(content-type=application/x-www-form-urlencoded)获取参数
             Enumeration<String> names = request.getParameterNames();
             while (names.hasMoreElements()) {
-
                 String name = names.nextElement();
                 String value = request.getParameter(name);
                 if(bw.isWritableProperty(name)) {

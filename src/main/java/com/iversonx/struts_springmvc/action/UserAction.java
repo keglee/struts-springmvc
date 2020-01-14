@@ -24,6 +24,10 @@ public class UserAction extends ActionSupport {
         return "success";
     }
 
+    public String testForm() {
+        return "testForm";
+    }
+
     public String getPassword() {
         return password;
     }
