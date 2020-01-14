@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -27,6 +29,8 @@ public class ActionHandlerInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Enumeration<String> headerNames = request.getHeaderNames();
+        String contentType = request.getContentType();
+
         System.out.println("Request URL: " + request.getRequestURL());
         System.out.println("Request Method: " + request.getMethod());
         System.out.println("Request Headers: ");
@@ -42,14 +46,20 @@ public class ActionHandlerInterceptor extends HandlerInterceptorAdapter {
             // 当嵌套属性为null时，自动创建嵌套属性的实例
             bw.setAutoGrowNestedPaths(true);
 
-            // 从查询字符串或表单数据(content-type=application/x-www-form-urlencoded)获取参数
-            Enumeration<String> names = request.getParameterNames();
-            while (names.hasMoreElements()) {
-                String name = names.nextElement();
-                String value = request.getParameter(name);
-                if(bw.isWritableProperty(name)) {
-                    bw.setPropertyValue(name, value);
+            if(contentType == null
+                    || "".equals(contentType)
+                    || MediaType.APPLICATION_FORM_URLENCODED_VALUE.equals(contentType)) {
+                // 从查询字符串或表单数据(content-type=application/x-www-form-urlencoded)获取参数
+                Enumeration<String> names = request.getParameterNames();
+                while (names.hasMoreElements()) {
+                    String name = names.nextElement();
+                    String value = request.getParameter(name);
+                    if(bw.isWritableProperty(name)) {
+                        bw.setPropertyValue(name, value);
+                    }
                 }
+            } else {
+                // 其他类型
             }
         }
         return true;
