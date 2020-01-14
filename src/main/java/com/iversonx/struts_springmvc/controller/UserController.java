@@ -16,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@RequestMapping("/mvc")
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/show.action")
+    @RequestMapping("/show")
     public String show(Model model,
                        @RequestParam(required = false, defaultValue = "Hello SpringMVC") String username,
                        @RequestParam(required = false, defaultValue = "123456") String password) {

@@ -5,7 +5,7 @@ Struts2迁移至SpringMVC
 
 第一步：[注册处理方法](REGISTER-HANDLER-METHOD.md)
 
-第二步：[将请求参数填充到Action实例中]()
+第二步：[参数解析](ARGUMENT-RESOLVER.md)
 
 第三步：[处理Action的返回值，使请求能够正确响应]()
 
@@ -16,4 +16,5 @@ Struts2迁移至SpringMVC
 - [spring mvc 提供的几个常用的扩展点](https://www.cnblogs.com/zhangjianbin/p/7903295.html)
 - [RequestMappingInfo详解](https://blog.csdn.net/roberts939299/article/details/73260485)
 - [@RequestMapping流程分析](https://juejin.im/post/5cbeadb96fb9a031ff0d18b5#heading-7)
+- [BeanWrapper](https://www.qzztf.com/2019/09/05/BeanWrapper)
 
