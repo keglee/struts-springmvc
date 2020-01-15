@@ -20,8 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ActionRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
-    @Autowired
-    private Map<String, Map<String, ActionConfig>> actionConfigMap;
+    private final  Map<String, Map<String, ActionConfig>> actionConfigMap;
+
+    public ActionRequestMappingHandlerMapping(Map<String, Map<String, ActionConfig>> actionConfigMap) {
+        this.actionConfigMap = actionConfigMap;
+    }
 
     @Override
     protected boolean isHandler(Class<?> beanType) {

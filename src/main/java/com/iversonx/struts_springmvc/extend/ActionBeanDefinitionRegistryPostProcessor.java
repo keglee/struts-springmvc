@@ -17,6 +17,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
@@ -28,8 +29,12 @@ import java.util.*;
  * @version 1.0
  * @date 2020/1/9 16:51
  */
-public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
-    private AnnotationConfigWebApplicationContext context;
+public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
+    private final Map<String, Map<String, ActionConfig>> actionConfigs;
+    public ActionBeanDefinitionRegistryPostProcessor(Map<String, Map<String, ActionConfig>> actionConfigs) {
+        this.actionConfigs = actionConfigs;
+    }
+
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         // 调用struts2的Dispatcher进行初始化，主要目的是为了使用struts2来解析struts xml文件，这样就不用自己重新写解析xml代码
@@ -43,7 +48,6 @@ public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinition
         Map<String, PackageConfig> packageConfigMap = configurationManager.getConfiguration().getPackageConfigs();
         Set<Map.Entry<String, PackageConfig>> entrySet = packageConfigMap.entrySet();
         // 遍历struts2的package配置
-        Map<String, Map<String, ActionConfig>> actionConfigs = context.getBean("actionConfigMap", Map.class);
         for(Map.Entry<String, PackageConfig> item : entrySet) {
             PackageConfig packageConfig = item.getValue();
             // 遍历package下的action
@@ -84,10 +88,5 @@ public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinition
             BeanDefinition beanDefinition = builder.getBeanDefinition();
             registry.registerBeanDefinition(className, beanDefinition);
         }
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = (AnnotationConfigWebApplicationContext)applicationContext;
     }
 }

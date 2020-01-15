@@ -5,6 +5,9 @@ import com.iversonx.struts_springmvc.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.util.List;
+
 public class UserAction extends ActionSupport {
 
     private UserService userService;
@@ -12,8 +15,13 @@ public class UserAction extends ActionSupport {
     private static final long serialVersionUID = -1353901915599323577L;
     private String username;
     private String password;
+    private File docFile;
 
     private UserModel userModel;
+
+    private String list;
+
+    private String[] array;
 
     public String show() {
         username = userService.show();
@@ -58,5 +66,29 @@ public class UserAction extends ActionSupport {
 
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    public File getDocFile() {
+        return docFile;
+    }
+
+    public void setDocFile(File docFile) {
+        this.docFile = docFile;
+    }
+
+    public String getList() {
+        return list;
+    }
+
+    public void setList(String list) {
+        this.list = list;
+    }
+
+    public String[] getArray() {
+        return array;
+    }
+
+    public void setArray(String[] array) {
+        this.array = array;
     }
 }

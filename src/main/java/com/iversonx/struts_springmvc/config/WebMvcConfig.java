@@ -1,26 +1,27 @@
 package com.iversonx.struts_springmvc.config;
 
+
 import com.iversonx.struts_springmvc.converter.StringToDateConverter;
 import com.iversonx.struts_springmvc.extend.ActionHandlerInterceptor;
+import com.iversonx.struts_springmvc.extend.ActionInvocableHandlerMethod;
 import com.iversonx.struts_springmvc.extend.ActionRequestMappingHandlerMapping;
-import com.sun.javafx.scene.layout.region.Margins;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import com.opensymphony.xwork2.config.entities.ActionConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.FormatterRegistry;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.format.support.FormattingConversionService;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * 1. 处理器映射（HandlerMapping）用于将一个请求（Request）映射到一个处理器。
@@ -33,24 +34,23 @@ import java.util.Set;
 @ComponentScan("com.iversonx.struts_springmvc")
 public class WebMvcConfig extends DelegatingWebMvcConfiguration {
 
-    @Autowired
-    private ActionHandlerInterceptor actionHandlerInterceptor;
-
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         registry.jsp().prefix("/").suffix(".jsp");
     }
 
-
     @Override
     protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
-        return new ActionRequestMappingHandlerMapping();
+        Map<String, Map<String, ActionConfig>> actionConfigMap = (Map<String, Map<String, ActionConfig>>)getApplicationContext().getBean("actionConfigMap");
+        return new ActionRequestMappingHandlerMapping(actionConfigMap);
     }
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         super.addInterceptors(registry);
-        registry.addInterceptor(actionHandlerInterceptor).addPathPatterns("/**/*.action");
+        ConversionService conversionService = getApplicationContext().getBean(ConversionService.class);
+        MappingJackson2HttpMessageConverter messageConverter = getApplicationContext().getBean(MappingJackson2HttpMessageConverter.class);
+        registry.addInterceptor(new ActionHandlerInterceptor(conversionService, messageConverter)).addPathPatterns("/**/*.action");
     }
 
     @Override
@@ -58,5 +58,24 @@ public class WebMvcConfig extends DelegatingWebMvcConfiguration {
         FormattingConversionService conversionService = super.mvcConversionService();
         conversionService.addConverter(new StringToDateConverter());
         return conversionService;
+    }
+
+    @Override
+    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+        MappingJackson2HttpMessageConverter messageConverter = getApplicationContext().getBean(MappingJackson2HttpMessageConverter.class);
+        converters.add(messageConverter);
+    }
+
+    @Override
+    protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
+        return new RequestMappingHandlerAdapter(){
+            @Override
+            protected ServletInvocableHandlerMethod createInvocableHandlerMethod(HandlerMethod handlerMethod) {
+                ConversionService conversionService = getApplicationContext().getBean(ConversionService.class);
+                MappingJackson2HttpMessageConverter messageConverter = getApplicationContext().getBean(MappingJackson2HttpMessageConverter.class);
+                return new ActionInvocableHandlerMethod(handlerMethod, conversionService, messageConverter);
+            }
+        };
     }
 }
