@@ -29,26 +29,22 @@ public class ApplicationConfig {
 
     @Bean("actionConfigMap")
     public Map<String, Map<String, ActionConfig>> actionConfigMap() {
-        System.out.println("@Bean actionConfigMap");
         return new HashMap<>(256);
     }
 
     @Bean
     public ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor(Map<String, Map<String, ActionConfig>> actionConfigMap) {
-        System.out.println("@Bean actionBeanDefinitionRegistryPostProcessor");
         return new ActionBeanDefinitionRegistryPostProcessor(actionConfigMap);
     }
 
     @Bean("actionConfigs")
     @Scope(BeanDefinition.SCOPE_SINGLETON)
     public List<ActionConfig> actionConfigs() {
-        System.out.println("@Bean actionConfigs");
         return new ArrayList<>(256);
     }
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {
-        System.out.println("@Bean mappingJackson2HttpMessageConverter");
         MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
         messageConverter.setObjectMapper(objectMapper);
         return messageConverter;
@@ -56,7 +52,6 @@ public class ApplicationConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        System.out.println("@Bean objectMapper");
         ObjectMapper objectMapper = new ObjectMapper();
         // 忽略未知的属性
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -66,7 +61,6 @@ public class ApplicationConfig {
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
-        System.out.println("@Bean multipartResolver");
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setDefaultEncoding("utf-8");
         return resolver;
