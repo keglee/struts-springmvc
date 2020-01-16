@@ -3,6 +3,7 @@ package com.iversonx.struts_springmvc.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iversonx.struts_springmvc.extend.ActionBeanDefinitionRegistryPostProcessor;
+import com.iversonx.struts_springmvc.extend.ActionConfigManager;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -27,21 +28,16 @@ import java.util.Map;
 @Configuration
 public class ApplicationConfig {
 
-    @Bean("actionConfigMap")
-    public Map<String, Map<String, ActionConfig>> actionConfigMap() {
-        return new HashMap<>(256);
+    @Bean
+    public ActionConfigManager actionConfigManager() {
+        return new ActionConfigManager();
     }
 
     @Bean
-    public ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor(Map<String, Map<String, ActionConfig>> actionConfigMap) {
-        return new ActionBeanDefinitionRegistryPostProcessor(actionConfigMap);
+    public ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor(ActionConfigManager actionConfigManager) {
+        return new ActionBeanDefinitionRegistryPostProcessor(actionConfigManager);
     }
 
-    @Bean("actionConfigs")
-    @Scope(BeanDefinition.SCOPE_SINGLETON)
-    public List<ActionConfig> actionConfigs() {
-        return new ArrayList<>(256);
-    }
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter(ObjectMapper objectMapper) {

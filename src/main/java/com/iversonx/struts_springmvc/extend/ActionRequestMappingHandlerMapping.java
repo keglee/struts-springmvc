@@ -3,6 +3,7 @@ package com.iversonx.struts_springmvc.extend;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
+import com.opensymphony.xwork2.config.entities.PackageConfig;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -16,12 +17,13 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ActionRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
-    private final  Map<String, Map<String, ActionConfig>> actionConfigMap;
+    private final ActionConfigManager actionConfigManager;
 
-    public ActionRequestMappingHandlerMapping(Map<String, Map<String, ActionConfig>> actionConfigMap) {
-        this.actionConfigMap = actionConfigMap;
+    public ActionRequestMappingHandlerMapping(ActionConfigManager actionConfigManager) {
+        this.actionConfigManager = actionConfigManager;
     }
 
     @Override
@@ -40,11 +42,22 @@ public class ActionRequestMappingHandlerMapping extends RequestMappingHandlerMap
         Map<Method, RequestMappingInfo> methods;
         // 如果是Struts Action，执行自定义的逻辑
         if(userType.getSuperclass() != null && ActionSupport.class.equals(userType.getSuperclass())) {
-            Map<String, ActionConfig> actionMap = actionConfigMap.get(userType.getName());
-            methods = new HashMap<>(actionMap.size());
-            for(Map.Entry<String, ActionConfig> entry : actionMap.entrySet()) {
-                ActionConfig actionConfig = entry.getValue();
-                RequestMappingInfo requestMappingInfo = RequestMappingInfo.paths(actionConfig.getName() + ".action")
+            Set<ActionConfig> actionConfigs = actionConfigManager.getActionConfigsByClass(userType.getName());
+            methods = new HashMap<>(actionConfigs.size());
+            for(ActionConfig actionConfig : actionConfigs) {
+                String namespace = actionConfigManager.getNamespace(actionConfig.getPackageName());
+                String[] paths;
+                if(namespace != null && !"".equals(namespace)) {
+                    if(namespace.endsWith("/")) {
+                        paths = new String[]{namespace + actionConfig.getName() + ".action"};
+                    } else {
+                        paths = new String[]{namespace + "/" + actionConfig.getName() + ".action"};
+                    }
+
+                } else {
+                    paths = new String[]{"/" + actionConfig.getName() + ".action"};
+                }
+                RequestMappingInfo requestMappingInfo = RequestMappingInfo.paths(paths)
                         .methods(RequestMethod.GET, RequestMethod.POST)
                         .mappingName(actionConfig.getClassName() + "#" + actionConfig.getName())
                         .build();

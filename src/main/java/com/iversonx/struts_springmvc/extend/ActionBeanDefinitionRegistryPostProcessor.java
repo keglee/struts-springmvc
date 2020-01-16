@@ -1,24 +1,18 @@
 package com.iversonx.struts_springmvc.extend;
 
-import com.iversonx.struts_springmvc.listener.ActionMappingListener;
+
 import com.iversonx.struts_springmvc.struts.MockServletContext;
 import com.opensymphony.xwork2.config.ConfigurationManager;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import com.opensymphony.xwork2.config.entities.PackageConfig;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.dispatcher.Dispatcher;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
 import java.util.*;
@@ -30,44 +24,47 @@ import java.util.*;
  * @date 2020/1/9 16:51
  */
 public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
-    private final Map<String, Map<String, ActionConfig>> actionConfigs;
-    public ActionBeanDefinitionRegistryPostProcessor(Map<String, Map<String, ActionConfig>> actionConfigs) {
-        this.actionConfigs = actionConfigs;
+    private final ActionConfigManager actionConfigManager;
+    public ActionBeanDefinitionRegistryPostProcessor(ActionConfigManager actionConfigManager) {
+        this.actionConfigManager = actionConfigManager;
     }
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         // 调用struts2的Dispatcher进行初始化，主要目的是为了使用struts2来解析struts xml文件，这样就不用自己重新写解析xml代码
-        ServletContext servletContext = new MockServletContext();
-        Dispatcher dispatcher = new Dispatcher(servletContext, new HashMap<>());
-        dispatcher.init();
+        try {
+            ServletContext servletContext = new MockServletContext();
+            Dispatcher dispatcher = new Dispatcher(servletContext, new HashMap<>());
+            dispatcher.init();
 
-        ConfigurationManager configurationManager = dispatcher.getConfigurationManager();
+            ConfigurationManager configurationManager = dispatcher.getConfigurationManager();
+            Map<String, PackageConfig> packageConfigMap = configurationManager.getConfiguration().getPackageConfigs();
+            Map<String, PackageConfig> notEmptyPackageConfigMap = new HashMap<>(packageConfigMap.size());
 
+            Set<Map.Entry<String, PackageConfig>> entrySet = packageConfigMap.entrySet();
+            // 遍历struts2的package配置
+            for(Map.Entry<String, PackageConfig> item : entrySet) {
+                PackageConfig packageConfig = item.getValue();
+                // 遍历package下的action
+                Map<String, ActionConfig> actionConfigMap = packageConfig.getActionConfigs();
 
-        Map<String, PackageConfig> packageConfigMap = configurationManager.getConfiguration().getPackageConfigs();
-        Set<Map.Entry<String, PackageConfig>> entrySet = packageConfigMap.entrySet();
-        // 遍历struts2的package配置
-        for(Map.Entry<String, PackageConfig> item : entrySet) {
-            PackageConfig packageConfig = item.getValue();
-            // 遍历package下的action
-            Map<String, ActionConfig> actionConfigMap = packageConfig.getAllActionConfigs();
-
-            if(actionConfigMap != null && !actionConfigMap.isEmpty()) {
-
-                String key = null;
-                for(Map.Entry<String, ActionConfig> entry : actionConfigMap.entrySet()) {
-                    ActionConfig actionConfig = entry.getValue();
-                    if(key == null) {
-                        key = actionConfig.getClassName();
+                if(actionConfigMap != null && !actionConfigMap.isEmpty()) {
+                    notEmptyPackageConfigMap.put(item.getKey(), item.getValue());
+                    for(Map.Entry<String, ActionConfig> entry : actionConfigMap.entrySet()) {
+                        ActionConfig actionConfig = entry.getValue();
+                        registerBean(registry, actionConfig);
                     }
-                    registerBean(registry, actionConfig);
-                }
 
-                actionConfigs.put(key, actionConfigMap);
+                }
             }
 
+            actionConfigManager.setPackageConfig(notEmptyPackageConfigMap);
+        } catch (BeansException e) {
+            throw e;
+        } catch (Exception e) {
+            // 打印日志
         }
+
     }
 
     @Override
@@ -84,7 +81,10 @@ public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinition
         String className = actionConfig.getClassName();
         if(!registry.containsBeanDefinition(className)) {
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(className);
+            // 设置bean的作用域
             builder.setScope(BeanDefinition.SCOPE_PROTOTYPE);
+            // 设置根据类型自动装配
+            builder.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             BeanDefinition beanDefinition = builder.getBeanDefinition();
             registry.registerBeanDefinition(className, beanDefinition);
         }

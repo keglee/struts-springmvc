@@ -29,7 +29,7 @@ public class UserAction extends ActionSupport {
     }
 
     public String add() {
-        return "success";
+        return show();
     }
 
     public String testForm() {

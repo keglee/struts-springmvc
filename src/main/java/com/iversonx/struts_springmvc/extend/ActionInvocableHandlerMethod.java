@@ -1,7 +1,7 @@
 package com.iversonx.struts_springmvc.extend;
 
 
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import com.opensymphony.xwork2.ActionSupport;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -50,9 +50,10 @@ public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod{
         if (request instanceof ServletWebRequest) {
             ServletWebRequest webRequest = (ServletWebRequest) request;
             HttpServletRequest httpServletRequest = webRequest.getRequest();
-            String uri = httpServletRequest.getRequestURI();
+
+            Class<?> handlerClass = getBeanType();
             // uri后缀为.action，即认为是Struts2的请求
-            if(uri.endsWith(".action")) {
+            if(ActionSupport.class.equals(handlerClass.getSuperclass())) {
                 Enumeration<String> headerNames = httpServletRequest.getHeaderNames();
                 System.out.println("Request URL: " + httpServletRequest.getRequestURL());
                 System.out.println("Request Method: " + httpServletRequest.getMethod());
@@ -63,7 +64,6 @@ public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod{
                 }
 
                 Object handler = getBean();
-                Class<?> handlerClass = getBeanType();
                 BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(handler);
                 bw.setConversionService(conversionService);
                 // 当嵌套属性为null时，自动创建嵌套属性的实例

@@ -2,9 +2,7 @@ package com.iversonx.struts_springmvc.config;
 
 
 import com.iversonx.struts_springmvc.converter.StringToDateConverter;
-import com.iversonx.struts_springmvc.extend.ActionHandlerInterceptor;
-import com.iversonx.struts_springmvc.extend.ActionInvocableHandlerMethod;
-import com.iversonx.struts_springmvc.extend.ActionRequestMappingHandlerMapping;
+import com.iversonx.struts_springmvc.extend.*;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -12,14 +10,14 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +39,8 @@ public class WebMvcConfig extends DelegatingWebMvcConfiguration {
 
     @Override
     protected RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
-        Map<String, Map<String, ActionConfig>> actionConfigMap = (Map<String, Map<String, ActionConfig>>)getApplicationContext().getBean("actionConfigMap");
-        return new ActionRequestMappingHandlerMapping(actionConfigMap);
+        ActionConfigManager actionConfigManager = getApplicationContext().getBean(ActionConfigManager.class);
+        return new ActionRequestMappingHandlerMapping(actionConfigManager);
     }
 
     @Override
@@ -69,13 +67,7 @@ public class WebMvcConfig extends DelegatingWebMvcConfiguration {
 
     @Override
     protected RequestMappingHandlerAdapter createRequestMappingHandlerAdapter() {
-        return new RequestMappingHandlerAdapter(){
-            @Override
-            protected ServletInvocableHandlerMethod createInvocableHandlerMethod(HandlerMethod handlerMethod) {
-                ConversionService conversionService = getApplicationContext().getBean(ConversionService.class);
-                MappingJackson2HttpMessageConverter messageConverter = getApplicationContext().getBean(MappingJackson2HttpMessageConverter.class);
-                return new ActionInvocableHandlerMethod(handlerMethod, conversionService, messageConverter);
-            }
-        };
+        return new ActionRequestMappingHandlerAdapter();
     }
+
 }
