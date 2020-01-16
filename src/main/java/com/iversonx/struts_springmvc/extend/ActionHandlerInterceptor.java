@@ -32,9 +32,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * @author Lijie
- * @version 1.0
- * @date 2020/1/14 10:51
+ * 拦截器，在请求处理前后进行额外的操作
  */
 public class ActionHandlerInterceptor extends HandlerInterceptorAdapter {
     private final ConversionService conversionService;

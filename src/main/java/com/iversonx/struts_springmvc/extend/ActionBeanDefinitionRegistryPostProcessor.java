@@ -18,6 +18,7 @@ import javax.servlet.ServletContext;
 import java.util.*;
 
 /**
+ * 在Spring加载所有BeanDefinition后，但还有实例化前，进行额外的处理
  * 读取struts配置，将ActionConfig转换为BeanDefinition
  * @author Lijie
  * @version 1.0

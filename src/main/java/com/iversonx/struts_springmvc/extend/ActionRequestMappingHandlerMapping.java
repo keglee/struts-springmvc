@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * 注册Struts请求映射
+ */
 public class ActionRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
     private final ActionConfigManager actionConfigManager;
 

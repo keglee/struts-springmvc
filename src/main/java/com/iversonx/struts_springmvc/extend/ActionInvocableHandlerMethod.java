@@ -27,9 +27,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /**
- * @author Lijie
- * @version 1.0
- * @date 2020/1/15 16:21
+ * 作用: 调用HandlerMethodArgumentResolver解析参数解析后，调用具体的Handler进行请求处理
  */
 public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod{
     private final ConversionService conversionService;

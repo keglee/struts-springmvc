@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 处理适配器: 根据用户请求调用具体的方法进行处理
  * @author Lijie
  * @version 1.0
  * @date 2020/1/16 15:56
