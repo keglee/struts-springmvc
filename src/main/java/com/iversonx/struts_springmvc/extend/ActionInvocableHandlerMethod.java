@@ -1,20 +1,15 @@
 package com.iversonx.struts_springmvc.extend;
 
 
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.HandlerMethod;
@@ -123,7 +118,6 @@ public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod{
             }
         }
 
-        Object result = super.invokeForRequest(request, mavContainer, providedArgs);
-        return result;
+        return super.invokeForRequest(request, mavContainer, providedArgs);
     }
 }
