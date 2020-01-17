@@ -37,6 +37,7 @@ public class ActionViewMethodReturnValueHandler implements HandlerMethodReturnVa
         if (returnValue instanceof CharSequence) {
             Class<?> handlerClass = returnType.getContainingClass();
             String methodName = returnType.getMethod().getName();
+            // 获取struts配置结果页
             ActionConfig actionConfig = actionConfigManager.getActionConfigByClassAndMethod(handlerClass.getName(), methodName);
             Map<String, ResultConfig> resultConfigMap = actionConfig.getResults();
             ResultConfig resultConfig = resultConfigMap.get(returnValue.toString());
@@ -61,8 +62,7 @@ public class ActionViewMethodReturnValueHandler implements HandlerMethodReturnVa
             if (isRedirectViewName(viewName)) {
                 mavContainer.setRedirectModelScenario(true);
             }*/
-        }
-        else if (returnValue != null) {
+        } else if (returnValue != null) {
             // should not happen
             throw new UnsupportedOperationException("Unexpected return type: " +
                     returnType.getParameterType().getName() + " in method: " + returnType.getMethod());

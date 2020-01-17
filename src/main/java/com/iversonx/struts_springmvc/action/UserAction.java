@@ -3,9 +3,14 @@ package com.iversonx.struts_springmvc.action;
 import com.iversonx.struts_springmvc.model.UserModel;
 import com.iversonx.struts_springmvc.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class UserAction extends ActionSupport {
@@ -24,7 +29,6 @@ public class UserAction extends ActionSupport {
     private String[] array;
 
     public String show() {
-        username = userService.show();
         return "success";
     }
 
@@ -32,8 +36,10 @@ public class UserAction extends ActionSupport {
         return show();
     }
 
-    public String testForm() {
-        return "testForm";
+    public void testAjax() throws IOException {
+        HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getResponse();
+        response.getWriter().println("Hello Ajax");
+        response.getWriter().flush();
     }
 
     public String getPassword() {

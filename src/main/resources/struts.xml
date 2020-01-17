@@ -12,9 +12,7 @@
             <result name="success"></result>
             <result name="add">add.jsp</result>
         </action>
-        <action name="testForm" class="com.iversonx.struts_springmvc.action.UserAction" method="testForm">
-            <result name="testForm">testForm.jsp</result>
-        </action>
+        <action name="testForm" class="com.iversonx.struts_springmvc.action.UserAction" method="testAjax" />
     </package>
     <include file="/lms/struts.xml"/>
 </struts>

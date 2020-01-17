@@ -8,6 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author Lijie
@@ -26,5 +32,20 @@ public class UserController {
                        @RequestParam(required = false, defaultValue = "123456") String password) {
         model.addAttribute("username", username);
         return "show";
+    }
+
+    @RequestMapping("/ajax")
+    public void ajax(HttpServletResponse response) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        String json = "{\"name\": \"iveronsx\"}";
+        response.getWriter().write(json);
+        response.getWriter().flush();
+    }
+
+    @RequestMapping("/ajax2")
+    @ResponseBody
+    public String ajax2() {
+        String json = "{\"name\": \"iveronsx\"}";
+        return json;
     }
 }
