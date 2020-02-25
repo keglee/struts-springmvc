@@ -7,10 +7,10 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.*;
 import java.util.EnumSet;
 
-public class WebInitializer /*extends AbstractContextLoaderInitializer*/ {
+public class WebInitializer extends AbstractContextLoaderInitializer {
 
     public void onStartup(ServletContext servletContext) throws ServletException {
-        // super.onStartup(servletContext);
+        super.onStartup(servletContext);
         struts(servletContext);
     }
 

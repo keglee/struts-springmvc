@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    <constant name="struts.objectFactory.spring.autoWire" value="type" />
+    <package name="struts-users" namespace="/" extends="struts-default">
+        <action name="list" class="com.iversonx.struts_springmvc.action.UserAction" method="list">
+            <result name="success">list.jsp</result>
+        </action>
+
+        <action name="detail" class="com.iversonx.struts_springmvc.action.UserAction" method="detail">
+            <result name="detail">detail.jsp</result>
+        </action>
+
+        <action name="add" class="com.iversonx.struts_springmvc.action.UserAction" method="add">
+            <result name="add" type="redirect">list.action</result>
+        </action>
+
+        <action name="update" class="com.iversonx.struts_springmvc.action.UserAction" method="update">
+            <result name="update" type="redirectAction">list</result>
+        </action>
+
+        <action name="delete" class="com.iversonx.struts_springmvc.action.UserAction" method="delete">
+            <result name="success" type="redirect">list.action</result>
+        </action>
+    </package>
+</struts>

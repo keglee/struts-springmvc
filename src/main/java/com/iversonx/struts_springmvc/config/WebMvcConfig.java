@@ -14,8 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * 4. 视图解析器(ViewResolver) 用于映射一个逻辑视图名称到一个真正的视图
  * 5. 视图(View)
  */
-@Configuration
-@ComponentScan("com.iversonx.struts_springmvc")
+//@Configuration
+//@ComponentScan("com.iversonx.struts_springmvc")
 public class WebMvcConfig extends DelegatingWebMvcConfiguration {
 
     @Override
