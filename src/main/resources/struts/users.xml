@@ -4,7 +4,7 @@
         "http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
     <constant name="struts.objectFactory.spring.autoWire" value="type" />
-    <package name="struts-users" namespace="/" extends="struts-default">
+    <package name="struts-users" namespace="/" extends="struts-default,json-default">
         <action name="list" class="com.iversonx.struts_springmvc.action.UserAction" method="list">
             <result name="success">list.jsp</result>
         </action>
@@ -23,6 +23,20 @@
 
         <action name="delete" class="com.iversonx.struts_springmvc.action.UserAction" method="delete">
             <result name="success" type="redirect">list.action</result>
+        </action>
+
+        <action name="upload" class="com.iversonx.struts_springmvc.action.UserAction" method="upload">
+            <result name="success" type="redirect">list.action</result>
+        </action>
+
+        <action name="download" class="com.iversonx.struts_springmvc.action.UserAction" method="download" />
+        <action name="download2" class="com.iversonx.struts_springmvc.action.UserAction">
+            <result type="stream">
+                <param name="contentType">application/vnd.ms-excel,charset=UTF-8</param>
+                <param name="contentDisposition">attachment;fileName=${fileName}</param>
+                <param name="inputName">inputStream</param>
+                <param name="bufferSize">1024</param>
+            </result>
         </action>
     </package>
 </struts>

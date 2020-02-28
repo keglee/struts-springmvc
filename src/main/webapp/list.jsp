@@ -8,5 +8,10 @@
 <c:forEach items="${users}" var="item">
     ${item.username}, ${item.password}, ${item.sex}<br/>
 </c:forEach>
+<form action="upload.action" method="post" enctype="multipart/form-data">
+    file:<input type="file" name="file"/>
+    <br>
+    <input type="submit" value="upload"/>
+</form>
 </body>
 </html>

@@ -3,9 +3,13 @@ package com.iversonx.struts_springmvc.action;
 import com.iversonx.struts_springmvc.bean.User;
 import com.iversonx.struts_springmvc.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.List;
 
 public class UserAction extends ActionSupport {
@@ -50,8 +54,56 @@ public class UserAction extends ActionSupport {
     }
 
     // 文件上传
+    private File file;
+    private String fileName;
+    public String upload() throws IOException {
+        //name:upload_42654f24_5bfe_4665_aaa5_25e560a6c4b5_00000002.tmp
+        //path:45845
+        HttpServletRequest request = ServletActionContext.getRequest();
+
+        System.out.println("name:" + file.getName());
+        System.out.println("path:" + file.getPath());
+        System.out.println("path:" + file.length());
+        return "success";
+    }
+
     // 文件下载
+    public void download() throws IOException {
+        HttpServletRequest request = ServletActionContext.getRequest();
+        HttpServletResponse response = ServletActionContext.getResponse();
+        //获取路径
+        String path = request.getSession().getServletContext().getRealPath("/show.jsp");
+
+        //获取文件
+        File file = new File(path);
+        response.setContentLength((int) file.length());
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment;filename=show.jsp");
+
+        byte[] buffer = new byte[400];
+        int len = 0;
+
+        InputStream is = new FileInputStream(file);
+        OutputStream os = response.getOutputStream();
+
+        while((len = is.read(buffer)) != -1) {
+            os.write(buffer, 0, len);
+        }
+
+        os.close();
+        is.close();
+    }
+
+    public InputStream getInputStream() throws Exception{
+        HttpServletRequest request = ServletActionContext.getRequest();
+        String path = request.getSession().getServletContext().getRealPath("/detail.jsp");
+        fileName = "detail2.jsp";
+        return new FileInputStream(new File(path));
+    }
+
     // ajax请求
+
 
     public Integer getId() {
         return id;
@@ -75,5 +127,21 @@ public class UserAction extends ActionSupport {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
