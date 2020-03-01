@@ -25,4 +25,9 @@ public class UserController {
         model.addAttribute("username", username);
         return "show";
     }
+
+    @RequestMapping("/redirect.action")
+    public String redirect() {
+        return "redirect:/mvc/show.action";
+    }
 }

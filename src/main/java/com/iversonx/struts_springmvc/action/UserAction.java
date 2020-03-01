@@ -3,9 +3,10 @@ package com.iversonx.struts_springmvc.action;
 import com.iversonx.struts_springmvc.bean.User;
 import com.iversonx.struts_springmvc.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
-import org.apache.struts2.ServletActionContext;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,18 +60,20 @@ public class UserAction extends ActionSupport {
     public String upload() throws IOException {
         //name:upload_42654f24_5bfe_4665_aaa5_25e560a6c4b5_00000002.tmp
         //path:45845
-        HttpServletRequest request = ServletActionContext.getRequest();
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
 
-        System.out.println("name:" + file.getName());
-        System.out.println("path:" + file.getPath());
-        System.out.println("path:" + file.length());
+        FileUtils.copyFile(file, new File("upload/" + fileName));
         return "success";
     }
 
-    // 文件下载
+    // 文件下载 支持
     public void download() throws IOException {
-        HttpServletRequest request = ServletActionContext.getRequest();
-        HttpServletResponse response = ServletActionContext.getResponse();
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
+        HttpServletResponse response = attr.getResponse();
         //获取路径
         String path = request.getSession().getServletContext().getRealPath("/show.jsp");
 
@@ -95,15 +98,72 @@ public class UserAction extends ActionSupport {
         is.close();
     }
 
-    public InputStream getInputStream() throws Exception{
-        HttpServletRequest request = ServletActionContext.getRequest();
+    // 文件下载2 暂不支持
+    public void download2() throws Exception{
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest request = attr.getRequest();
         String path = request.getSession().getServletContext().getRealPath("/detail.jsp");
         fileName = "detail2.jsp";
-        return new FileInputStream(new File(path));
+        inputStream =  new FileInputStream(new File(path));
     }
 
-    // ajax请求
+    private InputStream inputStream;
+    public InputStream getInputStream() throws Exception{
+        return inputStream;
+    }
 
+    // ajax请求1
+    public void ajax1() throws Exception{
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpServletResponse response = attr.getResponse();
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+        PrintWriter out = response.getWriter();
+        out.print("HelloWorld");
+        out.flush();
+        out.close();
+    }
+
+
+    // ajax请求3 不支持
+    private InputStream ajax3Stream;
+    public String ajax3() throws Exception {
+        String str = "HelloWorld3333";
+        ajax3Stream = new ByteArrayInputStream(str.getBytes("UTF-8"));
+        return "success";
+    }
+
+    public InputStream getAjax3Stream() {
+        return ajax3Stream;
+    }
+
+    // ajax请求4 暂不支持
+    private String name;
+    private String sex;
+
+    public String ajax4() {
+        name = "kobe";
+        sex = "男";
+        return "success";
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Integer getId() {
         return id;

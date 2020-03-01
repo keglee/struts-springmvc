@@ -1,7 +1,5 @@
 package com.iversonx.struts_springmvc.config;
 
-import com.iversonx.struts_springmvc.extend.ActionBeanDefinitionRegistryPostProcessor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,8 +11,4 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan("com.iversonx.struts_springmvc")
 public class ApplicationConfig {
-
-    public ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor() {
-        return new ActionBeanDefinitionRegistryPostProcessor();
-    }
 }
