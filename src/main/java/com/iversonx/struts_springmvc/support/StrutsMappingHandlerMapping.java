@@ -1,7 +1,7 @@
 package com.iversonx.struts_springmvc.support;
 
 
-import com.iversonx.struts_springmvc.support.processor.ActionConfigManager;
+import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 import org.springframework.aop.support.AopUtils;
@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class ActionMappingHandlerMapping extends RequestMappingHandlerMapping {
+public class StrutsMappingHandlerMapping extends RequestMappingHandlerMapping {
 
-    private final ActionConfigManager actionConfigManager;
+    private final StrutsConfigManager actionConfigManager;
 
-    public ActionMappingHandlerMapping(ActionConfigManager actionConfigManager) {
+    public StrutsMappingHandlerMapping(StrutsConfigManager actionConfigManager) {
         this.actionConfigManager = actionConfigManager;
     }
 

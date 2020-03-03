@@ -20,5 +20,4 @@ public class WebMvcConfig extends DelegatingWebMvcConfiguration {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         registry.jsp().prefix("/").suffix(".jsp");
     }
-
 }

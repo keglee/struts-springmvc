@@ -1,15 +1,16 @@
 package com.iversonx.struts_springmvc.support;
 
+import com.iversonx.struts_springmvc.support.result.StrutsResultValueHandlerComposite;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
-import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -28,19 +29,21 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod {
+public class StrutsInvocableHandlerMethod extends ServletInvocableHandlerMethod {
     private final ConversionService conversionService;
     private final MappingJackson2HttpMessageConverter messageConverter;
-    private final ActionReturnValueHandler returnValueHandler;
+    private StrutsResultValueHandlerComposite strutsReturnValueHandlers;
 
-    public ActionInvocableHandlerMethod(HandlerMethod handlerMethod,
+    public StrutsInvocableHandlerMethod(HandlerMethod handlerMethod,
                                         ConversionService conversionService,
-                                        MappingJackson2HttpMessageConverter messageConverter,
-                                        ActionReturnValueHandler returnValueHandler) {
+                                        MappingJackson2HttpMessageConverter messageConverter) {
         super(handlerMethod);
         this.conversionService = conversionService;
         this.messageConverter = messageConverter;
-        this.returnValueHandler = returnValueHandler;
+    }
+
+    public void setStrutsReturnValueHandlers(StrutsResultValueHandlerComposite returnValueHandlers) {
+        this.strutsReturnValueHandlers = returnValueHandlers;
     }
 
 
@@ -56,15 +59,17 @@ public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod 
 
         // 调用handler
         Object returnValue = super.invokeForRequest(webRequest, mavContainer, providedArgs);
+        if (returnValue == null) {
+            mavContainer.setRequestHandled(true);
+            return;
+        }
+
         if (returnValue instanceof CharSequence) {
             addAttribute(mavContainer, bw);
         }
 
-        MethodParameter methodParameter = getReturnValueType(returnValue);
-        if(returnValueHandler.supportsReturnType(methodParameter)) {
-            this.returnValueHandler.handleReturnValue(
-                    returnValue, methodParameter, mavContainer, webRequest);
-        }
+        this.strutsReturnValueHandlers.handleReturnValue(
+                returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
     }
 
     private void argumentResolver(HttpServletRequest request, BeanWrapper bw) throws Exception{
@@ -162,7 +167,6 @@ public class ActionInvocableHandlerMethod extends ServletInvocableHandlerMethod 
                     && wrapper.isReadableProperty(name)
                     && !name.endsWith("Service")
                     && !name.endsWith("Facade")) {
-                System.out.println(name + ":" + descriptor.getPropertyType());
                 modelMap.addAttribute(name, wrapper.getPropertyValue(name));
             }
         }

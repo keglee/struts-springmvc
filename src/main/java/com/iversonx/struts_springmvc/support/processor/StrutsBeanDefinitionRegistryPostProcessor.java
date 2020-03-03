@@ -26,10 +26,10 @@ import java.util.Set;
  * @version 1.0
  * @date 2020/1/9 16:51
  */
-public class ActionBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
+public class StrutsBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
     private final Log logger = LogFactory.getLog(this.getClass());
-    private final ActionConfigManager actionConfigManager;
-    public ActionBeanDefinitionRegistryPostProcessor(ActionConfigManager actionConfigManager) {
+    private final StrutsConfigManager actionConfigManager;
+    public StrutsBeanDefinitionRegistryPostProcessor(StrutsConfigManager actionConfigManager) {
         this.actionConfigManager = actionConfigManager;
     }
 

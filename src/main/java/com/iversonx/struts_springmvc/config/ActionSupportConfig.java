@@ -2,11 +2,10 @@ package com.iversonx.struts_springmvc.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.iversonx.struts_springmvc.support.ActionMappingHandlerAdapter;
-import com.iversonx.struts_springmvc.support.ActionMappingHandlerMapping;
-import com.iversonx.struts_springmvc.support.ActionReturnValueHandler;
-import com.iversonx.struts_springmvc.support.processor.ActionBeanDefinitionRegistryPostProcessor;
-import com.iversonx.struts_springmvc.support.processor.ActionConfigManager;
+import com.iversonx.struts_springmvc.support.StrutsMappingHandlerAdapter;
+import com.iversonx.struts_springmvc.support.StrutsMappingHandlerMapping;
+import com.iversonx.struts_springmvc.support.processor.StrutsBeanDefinitionRegistryPostProcessor;
+import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -18,30 +17,25 @@ import java.text.SimpleDateFormat;
 public class ActionSupportConfig {
 
     @Bean
-    public ActionConfigManager actionConfigManager() {
-        return new ActionConfigManager();
+    public StrutsConfigManager actionConfigManager() {
+        return new StrutsConfigManager();
     }
 
     @Bean
-    public ActionBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor(ActionConfigManager actionConfigManager) {
-        return new ActionBeanDefinitionRegistryPostProcessor(actionConfigManager);
+    public StrutsBeanDefinitionRegistryPostProcessor actionBeanDefinitionRegistryPostProcessor(StrutsConfigManager actionConfigManager) {
+        return new StrutsBeanDefinitionRegistryPostProcessor(actionConfigManager);
     }
 
     @Bean
-    public ActionMappingHandlerMapping actionMappingHandlerMapping(ActionConfigManager actionConfigManager) {
-        return new ActionMappingHandlerMapping(actionConfigManager);
+    public StrutsMappingHandlerMapping actionMappingHandlerMapping(StrutsConfigManager actionConfigManager) {
+        return new StrutsMappingHandlerMapping(actionConfigManager);
     }
 
     @Bean
-    public ActionMappingHandlerAdapter actionMappingHandlerAdapter() {
-        ActionMappingHandlerAdapter adapter = new ActionMappingHandlerAdapter();
+    public StrutsMappingHandlerAdapter actionMappingHandlerAdapter() {
+        StrutsMappingHandlerAdapter adapter = new StrutsMappingHandlerAdapter();
         adapter.setOrder(0);
         return adapter;
-    }
-
-    @Bean
-    public ActionReturnValueHandler actionReturnValueHandler() {
-        return new ActionReturnValueHandler();
     }
 
     @Bean
