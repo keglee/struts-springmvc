@@ -6,6 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 /**
  * @author Lijie
@@ -29,5 +34,18 @@ public class UserController {
     @RequestMapping("/redirect.action")
     public String redirect() {
         return "redirect:/mvc/show.action";
+    }
+
+    @RequestMapping("/ajax1.action")
+    public void ajax1() throws Exception{
+        ServletRequestAttributes attr = (ServletRequestAttributes)
+                RequestContextHolder.currentRequestAttributes();
+        HttpServletResponse response = attr.getResponse();
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=utf-8");
+        PrintWriter out = response.getWriter();
+        out.print("HelloWorld");
+        out.flush();
+        out.close();
     }
 }

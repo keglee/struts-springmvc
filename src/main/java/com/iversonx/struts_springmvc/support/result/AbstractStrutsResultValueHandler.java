@@ -4,10 +4,12 @@ import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.config.entities.ResultConfig;
 import org.springframework.core.MethodParameter;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 
-public abstract class AbstractStrutsResultValueHandler implements HandlerMethodReturnValueHandler {
+public abstract class AbstractStrutsResultValueHandler {
     protected final StrutsConfigManager strutsConfigManager;
     protected ResultConfig resultConfig;
 
@@ -15,18 +17,14 @@ public abstract class AbstractStrutsResultValueHandler implements HandlerMethodR
         this.strutsConfigManager = strutsConfigManager;
     }
 
-    @Override
-    public boolean supportsReturnType(MethodParameter returnType) {
-        // 必须是Struts Action类型
-        return returnType.getContainingClass().getSuperclass().equals(ActionSupport.class);
-    }
 
 
     public boolean supportsResultType(Object returnValue, MethodParameter returnType) {
-        if (supportsReturnType(returnType)
-                && returnValue != null
-                && returnValue instanceof CharSequence) {
+        if(returnValue == null) {
+            returnValue = "success";
+        }
 
+        if (returnType.getContainingClass().getSuperclass().equals(ActionSupport.class)) {
             Class<?> handlerClass = returnType.getContainingClass();
             String methodName = returnType.getMethod().getName();
             resultConfig = strutsConfigManager
@@ -38,5 +36,8 @@ public abstract class AbstractStrutsResultValueHandler implements HandlerMethodR
     }
 
     abstract boolean supportsResultClass(String className);
+
+    abstract void handleReturnValue(Object returnValue, MethodParameter returnType,
+                                    ModelAndViewContainer mavContainer, NativeWebRequest webRequest, Object handler) throws Exception;
 
 }

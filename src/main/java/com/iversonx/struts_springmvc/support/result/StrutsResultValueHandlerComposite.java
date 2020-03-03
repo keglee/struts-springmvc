@@ -16,13 +16,14 @@ public class StrutsResultValueHandlerComposite {
     private final List<AbstractStrutsResultValueHandler> returnValueHandlers = new ArrayList<>(5);
 
     public void handleReturnValue(Object returnValue, MethodParameter returnType,
-                                  ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
+                                  ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
+                                  Object action) throws Exception {
 
         AbstractStrutsResultValueHandler handler = selectHandler(returnValue, returnType);
         if (handler == null) {
             throw new IllegalArgumentException("Unknown return value type: " + returnType.getParameterType().getName());
         }
-        handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
+        handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest, action);
     }
 
     public void addHandler(AbstractStrutsResultValueHandler returnValueHandler) {

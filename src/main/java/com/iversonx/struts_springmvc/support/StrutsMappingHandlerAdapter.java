@@ -1,10 +1,7 @@
 package com.iversonx.struts_springmvc.support;
 
 import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
-import com.iversonx.struts_springmvc.support.result.ActionRedirectResultValueHandler;
-import com.iversonx.struts_springmvc.support.result.DispatcherResultValueHandler;
-import com.iversonx.struts_springmvc.support.result.RedirectResultValueHandler;
-import com.iversonx.struts_springmvc.support.result.StrutsResultValueHandlerComposite;
+import com.iversonx.struts_springmvc.support.result.*;
 import com.opensymphony.xwork2.ActionSupport;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -27,6 +24,8 @@ public class StrutsMappingHandlerAdapter extends RequestMappingHandlerAdapter {
         strutsReturnValueHandlers.addHandler(new DispatcherResultValueHandler(strutsConfigManager));
         strutsReturnValueHandlers.addHandler(new RedirectResultValueHandler(strutsConfigManager));
         strutsReturnValueHandlers.addHandler(new ActionRedirectResultValueHandler(strutsConfigManager));
+        strutsReturnValueHandlers.addHandler(new StreamResultValueHandler(strutsConfigManager));
+
         strutsInvocableHandlerMethod.setStrutsReturnValueHandlers(strutsReturnValueHandlers);
 
         return strutsInvocableHandlerMethod;

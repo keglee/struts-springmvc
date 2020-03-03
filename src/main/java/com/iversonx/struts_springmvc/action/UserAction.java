@@ -98,7 +98,7 @@ public class UserAction extends ActionSupport {
         is.close();
     }
 
-    // 文件下载2 暂不支持
+    // 文件下载2
     public void download2() throws Exception{
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();
@@ -127,7 +127,7 @@ public class UserAction extends ActionSupport {
     }
 
 
-    // ajax请求3 不支持
+    // ajax请求3
     private InputStream ajax3Stream;
     public String ajax3() throws Exception {
         String str = "HelloWorld3333";

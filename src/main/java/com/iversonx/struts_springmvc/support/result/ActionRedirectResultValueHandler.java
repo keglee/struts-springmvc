@@ -7,10 +7,16 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * 处理void或String类型的返回值
+ * 处理重定向到action
+ * <b>示例:</b>
+ *
+ * <pre>
+ *   &lt;result name="success" type="redirectAction"&gt;
+ *      &lt;param name="actionName"&gt;foo&lt;/param&gt;
+ * &lt;/result&gt;
+ * </pre>
  */
 public class ActionRedirectResultValueHandler extends AbstractStrutsResultValueHandler {
-
     private static final String SUPPORT_CLASS = "org.apache.struts2.dispatcher.ServletActionRedirectResult";
 
     public ActionRedirectResultValueHandler(StrutsConfigManager strutsConfigManager) {
@@ -24,7 +30,9 @@ public class ActionRedirectResultValueHandler extends AbstractStrutsResultValueH
     }
 
     @Override
-    public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) {
+    public void handleReturnValue(Object returnValue, MethodParameter returnType,
+                                  ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
+                                  Object handler) throws Exception{
 
         if (returnValue instanceof CharSequence
                 && resultConfig != null) {
@@ -40,7 +48,7 @@ public class ActionRedirectResultValueHandler extends AbstractStrutsResultValueH
             String viewName = "redirect:" + resultName;
             mavContainer.setRedirectModelScenario(true);
             mavContainer.setViewName(viewName);
-        } else {
+        } else if(returnValue != null ){
             throw new UnsupportedOperationException("Unexpected return type: " +
                     returnType.getParameterType().getName() + " in method: " + returnType.getMethod());
         }

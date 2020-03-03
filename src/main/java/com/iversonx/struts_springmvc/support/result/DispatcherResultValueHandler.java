@@ -33,7 +33,9 @@ public class DispatcherResultValueHandler extends AbstractStrutsResultValueHandl
     }
 
     @Override
-    public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) {
+    public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest,
+                                  Object handler) throws Exception{
 
         if (returnValue instanceof CharSequence
                 && resultConfig != null) {
@@ -49,7 +51,7 @@ public class DispatcherResultValueHandler extends AbstractStrutsResultValueHandl
                 viewName = returnValue.toString();
             }
             mavContainer.setViewName(viewName);
-        } else {
+        } else if(returnValue != null ){
             throw new UnsupportedOperationException("Unexpected return type: " +
                     returnType.getParameterType().getName() + " in method: " + returnType.getMethod());
         }

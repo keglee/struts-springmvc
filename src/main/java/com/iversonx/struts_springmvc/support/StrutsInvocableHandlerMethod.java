@@ -6,6 +6,7 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -16,14 +17,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -59,17 +58,32 @@ public class StrutsInvocableHandlerMethod extends ServletInvocableHandlerMethod 
 
         // 调用handler
         Object returnValue = super.invokeForRequest(webRequest, mavContainer, providedArgs);
-        if (returnValue == null) {
-            mavContainer.setRequestHandled(true);
-            return;
-        }
+        setResponseStatus(webRequest);
 
         if (returnValue instanceof CharSequence) {
             addAttribute(mavContainer, bw);
         }
 
         this.strutsReturnValueHandlers.handleReturnValue(
-                returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
+                returnValue, getReturnValueType(returnValue), mavContainer, webRequest, getBean());
+    }
+
+    private void setResponseStatus(ServletWebRequest webRequest) throws IOException {
+        HttpStatus status = getResponseStatus();
+        if (status == null) {
+            return;
+        }
+
+        String reason = getResponseStatusReason();
+        if (StringUtils.hasText(reason)) {
+            webRequest.getResponse().sendError(status.value(), reason);
+        }
+        else {
+            webRequest.getResponse().setStatus(status.value());
+        }
+
+        // To be picked up by RedirectView
+        webRequest.getRequest().setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, status);
     }
 
     private void argumentResolver(HttpServletRequest request, BeanWrapper bw) throws Exception{
@@ -98,12 +112,6 @@ public class StrutsInvocableHandlerMethod extends ServletInvocableHandlerMethod 
         }
     }
 
-    /**
-     *
-     * @param request
-     * @param bw
-     * @throws Exception
-     */
     public void resolveRequestBody(HttpServletRequest request, BeanWrapper bw) throws Exception{
         long contentLength = request.getContentLengthLong();
         String contentType = request.getContentType();
