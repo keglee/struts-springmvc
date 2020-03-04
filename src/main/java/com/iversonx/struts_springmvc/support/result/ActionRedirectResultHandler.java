@@ -1,7 +1,6 @@
 package com.iversonx.struts_springmvc.support.result;
 
 import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -16,10 +15,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * &lt;/result&gt;
  * </pre>
  */
-public class ActionRedirectResultValueHandler extends AbstractStrutsResultValueHandler {
+public class ActionRedirectResultHandler extends AbstractStrutsResultHandler {
     private static final String SUPPORT_CLASS = "org.apache.struts2.dispatcher.ServletActionRedirectResult";
 
-    public ActionRedirectResultValueHandler(StrutsConfigManager strutsConfigManager) {
+    public ActionRedirectResultHandler(StrutsConfigManager strutsConfigManager) {
         super(strutsConfigManager);
     }
 

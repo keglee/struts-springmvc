@@ -1,7 +1,6 @@
 package com.iversonx.struts_springmvc.support.result;
 
 import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -21,9 +20,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  *     &lt;result name="success"&gt;success.jsp&lt;/result&gt;
  * </pre>
  */
-public class DispatcherResultValueHandler extends AbstractStrutsResultValueHandler {
+public class DispatcherResultHandler extends AbstractStrutsResultHandler {
     private static final String SUPPORT_CLASS = "org.apache.struts2.dispatcher.ServletDispatcherResult";
-    public DispatcherResultValueHandler(StrutsConfigManager strutsConfigManager) {
+    public DispatcherResultHandler(StrutsConfigManager strutsConfigManager) {
         super(strutsConfigManager);
     }
 

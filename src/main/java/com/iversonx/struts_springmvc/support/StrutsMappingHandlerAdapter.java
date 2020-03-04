@@ -20,11 +20,12 @@ public class StrutsMappingHandlerAdapter extends RequestMappingHandlerAdapter {
         StrutsInvocableHandlerMethod strutsInvocableHandlerMethod = new StrutsInvocableHandlerMethod(handlerMethod, conversionService, messageConverter);
         StrutsConfigManager strutsConfigManager = getApplicationContext().getBean(StrutsConfigManager.class);
 
-        StrutsResultValueHandlerComposite strutsReturnValueHandlers = new StrutsResultValueHandlerComposite();
-        strutsReturnValueHandlers.addHandler(new DispatcherResultValueHandler(strutsConfigManager));
-        strutsReturnValueHandlers.addHandler(new RedirectResultValueHandler(strutsConfigManager));
-        strutsReturnValueHandlers.addHandler(new ActionRedirectResultValueHandler(strutsConfigManager));
-        strutsReturnValueHandlers.addHandler(new StreamResultValueHandler(strutsConfigManager));
+        StrutsResultHandlerComposite strutsReturnValueHandlers = new StrutsResultHandlerComposite();
+        strutsReturnValueHandlers.addHandler(new DispatcherResultHandler(strutsConfigManager));
+        strutsReturnValueHandlers.addHandler(new RedirectResultHandler(strutsConfigManager));
+        strutsReturnValueHandlers.addHandler(new ActionRedirectResultHandler(strutsConfigManager));
+        strutsReturnValueHandlers.addHandler(new StreamResultHandler(strutsConfigManager));
+        strutsReturnValueHandlers.addHandler(new JSONResultHandler(strutsConfigManager));
 
         strutsInvocableHandlerMethod.setStrutsReturnValueHandlers(strutsReturnValueHandlers);
 

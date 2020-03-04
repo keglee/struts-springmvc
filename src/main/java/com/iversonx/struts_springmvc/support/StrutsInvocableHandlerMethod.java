@@ -1,6 +1,6 @@
 package com.iversonx.struts_springmvc.support;
 
-import com.iversonx.struts_springmvc.support.result.StrutsResultValueHandlerComposite;
+import com.iversonx.struts_springmvc.support.result.StrutsResultHandlerComposite;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
@@ -31,7 +31,7 @@ import java.util.Map;
 public class StrutsInvocableHandlerMethod extends ServletInvocableHandlerMethod {
     private final ConversionService conversionService;
     private final MappingJackson2HttpMessageConverter messageConverter;
-    private StrutsResultValueHandlerComposite strutsReturnValueHandlers;
+    private StrutsResultHandlerComposite strutsReturnValueHandlers;
 
     public StrutsInvocableHandlerMethod(HandlerMethod handlerMethod,
                                         ConversionService conversionService,
@@ -41,7 +41,7 @@ public class StrutsInvocableHandlerMethod extends ServletInvocableHandlerMethod 
         this.messageConverter = messageConverter;
     }
 
-    public void setStrutsReturnValueHandlers(StrutsResultValueHandlerComposite returnValueHandlers) {
+    public void setStrutsReturnValueHandlers(StrutsResultHandlerComposite returnValueHandlers) {
         this.strutsReturnValueHandlers = returnValueHandlers;
     }
 

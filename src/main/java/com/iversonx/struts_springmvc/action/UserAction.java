@@ -24,7 +24,7 @@ public class UserAction extends ActionSupport {
     private List<User> users;
     private User user;
     /**
-     * 列表
+     * 列表 已支持
      */
     public String list() {
         users = userService.list();
@@ -32,29 +32,38 @@ public class UserAction extends ActionSupport {
     }
 
     /**
-     * 详情
+     * 详情 已支持
      */
     public String detail() {
         user = userService.detail(id);
         return "detail";
     }
 
+    /**
+     * 已支持 type="redirect"
+     */
     public String add() {
         userService.add(user);
         return "add";
     }
 
+    /**
+     * 已支持 type="redirectAction"
+     */
     public String update() {
         userService.update(user);
         return "update";
     }
 
+    /**
+     * 已支持 type="redirect"
+     */
     public String delete() {
         userService.delete(id);
         return "success";
     }
 
-    // 文件上传
+    // 已支持 文件上传 type="redirect"
     private File file;
     private String fileName;
     public String upload() throws IOException {
@@ -98,7 +107,7 @@ public class UserAction extends ActionSupport {
         is.close();
     }
 
-    // 文件下载2
+    // 文件下载2 支持
     public void download2() throws Exception{
         ServletRequestAttributes attr = (ServletRequestAttributes)
                 RequestContextHolder.currentRequestAttributes();

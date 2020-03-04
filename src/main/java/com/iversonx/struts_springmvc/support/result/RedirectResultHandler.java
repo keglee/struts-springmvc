@@ -1,7 +1,6 @@
 package com.iversonx.struts_springmvc.support.result;
 
 import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
-import com.opensymphony.xwork2.config.entities.ResultConfig;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -21,11 +20,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  *   &lt;result name="success" type="redirect"&gt;foo.jsp&lt;/result&gt;
  * </pre>
  */
-public class RedirectResultValueHandler extends AbstractStrutsResultValueHandler {
+public class RedirectResultHandler extends AbstractStrutsResultHandler {
 
     private static final String SUPPORT_CLASS = "org.apache.struts2.dispatcher.ServletRedirectResult";
 
-    public RedirectResultValueHandler(StrutsConfigManager strutsConfigManager) {
+    public RedirectResultHandler(StrutsConfigManager strutsConfigManager) {
         super(strutsConfigManager);
     }
 

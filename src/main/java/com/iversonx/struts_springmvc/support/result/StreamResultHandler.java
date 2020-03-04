@@ -4,24 +4,13 @@ import com.iversonx.struts_springmvc.support.processor.StrutsConfigManager;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.http.server.ServletServerHttpResponse;
-import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,10 +18,10 @@ import java.util.Map;
  * @version 1.0
  * @date 2020/3/3 16:06
  */
-public class StreamResultValueHandler extends AbstractStrutsResultValueHandler {
+public class StreamResultHandler extends AbstractStrutsResultHandler {
     private static final String SUPPORT_CLASS = "org.apache.struts2.dispatcher.StreamResult";
 
-    public StreamResultValueHandler(StrutsConfigManager strutsConfigManager) {
+    public StreamResultHandler(StrutsConfigManager strutsConfigManager) {
         super(strutsConfigManager);
     }
 
@@ -55,6 +44,9 @@ public class StreamResultValueHandler extends AbstractStrutsResultValueHandler {
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(handler);
         InputStream stream = (InputStream)bw.getPropertyValue(inputName);
 
+
+
+
         ServletWebRequest servletWebRequest = (ServletWebRequest) webRequest;
         HttpServletResponse response = servletWebRequest.getResponse();
         response.setContentLength(stream.available());
@@ -62,6 +54,15 @@ public class StreamResultValueHandler extends AbstractStrutsResultValueHandler {
         response.setContentType(contentType);
 
         if(contentDisposition != null) {
+            // TODO 简单替换占位符
+            if(contentDisposition.contains("${")) {
+                int startIndex = contentDisposition.indexOf("${");
+                int endIndex = contentDisposition.indexOf("}");
+                String p = contentDisposition.substring(startIndex + 2, endIndex);
+                String value = (String)bw.getPropertyValue(p);
+                contentDisposition = contentDisposition.replace("${" + p +"}", value);
+            }
+
             response.setHeader("Content-Disposition", contentDisposition);
         }
 
