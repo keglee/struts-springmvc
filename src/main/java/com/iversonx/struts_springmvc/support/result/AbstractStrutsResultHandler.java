@@ -18,16 +18,14 @@ public abstract class AbstractStrutsResultHandler {
 
 
 
-    public boolean supportsResultType(Object returnValue, MethodParameter returnType) {
+    public boolean supportsResultType(Object returnValue, MethodParameter returnType, String uri) {
         if(returnValue == null) {
             returnValue = "success";
         }
 
         if (returnType.getContainingClass().getSuperclass().equals(ActionSupport.class)) {
-            Class<?> handlerClass = returnType.getContainingClass();
-            String methodName = returnType.getMethod().getName();
             resultConfig = strutsConfigManager
-                    .getResultConfigByClassAndMethodAndReturnValue(handlerClass.getName(), methodName, returnValue.toString());
+                    .getResultConfigByURIReturnValue(uri, returnValue.toString());
             return resultConfig != null && supportsResultClass(resultConfig.getClassName());
         }
 

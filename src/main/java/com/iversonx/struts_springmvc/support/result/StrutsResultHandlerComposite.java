@@ -2,8 +2,10 @@ package com.iversonx.struts_springmvc.support.result;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,18 @@ public class StrutsResultHandlerComposite {
                                   ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
                                   Object action) throws Exception {
 
-        AbstractStrutsResultHandler handler = selectHandler(returnValue, returnType);
+        ServletWebRequest servletWebRequest = (ServletWebRequest)webRequest;
+        String uri = servletWebRequest.getRequest().getRequestURI();
+        if(uri.endsWith(".do")) {
+            int index = uri.indexOf(".do");
+            uri = uri.substring(0, index);
+        }
+
+        if(uri.endsWith(".action")) {
+            int index = uri.indexOf(".action");
+            uri = uri.substring(0, index);
+        }
+        AbstractStrutsResultHandler handler = selectHandler(returnValue, returnType, uri);
         if (handler == null) {
             throw new IllegalArgumentException("Unknown return value type: " + returnType.getParameterType().getName());
         }
@@ -30,10 +43,10 @@ public class StrutsResultHandlerComposite {
         returnValueHandlers.add(returnValueHandler);
     }
 
-    private AbstractStrutsResultHandler selectHandler(Object returnValue, MethodParameter returnType) {
+    private AbstractStrutsResultHandler selectHandler(Object returnValue, MethodParameter returnType, String uri) {
 
         for (AbstractStrutsResultHandler handler : this.returnValueHandlers) {
-            if (handler.supportsResultType(returnValue, returnType)) {
+            if (handler.supportsResultType(returnValue, returnType, uri)) {
                 return handler;
             }
         }

@@ -20,7 +20,7 @@ public class StrutsConfigManager {
      */
     private Map<String, Set<ActionConfig>> actionConfigWithClass = new HashMap<>();
 
-    private Map<String, ActionConfig> actionConfigWithClassAndMethod = new HashMap<>();
+    private Map<String, ActionConfig> actionConfigWithURI = new HashMap<>();
 
     public void setPackageConfig(Map<String, PackageConfig> packageConfig) {
         this.packageConfigMap = packageConfig;
@@ -29,7 +29,9 @@ public class StrutsConfigManager {
 
     private void initMap() {
         for(Map.Entry<String, PackageConfig> entry : this.packageConfigMap.entrySet()) {
-            Map<String, ActionConfig> actionConfigMap = entry.getValue().getActionConfigs();
+            PackageConfig packageConfig = entry.getValue();
+            String namespace = packageConfig.getNamespace();
+            Map<String, ActionConfig> actionConfigMap = packageConfig.getActionConfigs();
             for(Map.Entry<String, ActionConfig> item : actionConfigMap.entrySet()) {
                 ActionConfig actionConfig = item.getValue();
                 String className = actionConfig.getClassName();
@@ -40,8 +42,9 @@ public class StrutsConfigManager {
                 actionConfigs.add(item.getValue());
                 this.actionConfigWithClass.put(className, actionConfigs);
 
-                String key = className + "#" + actionConfig.getMethodName();
-                this.actionConfigWithClassAndMethod.put(key, actionConfig);
+                // 使用action配置中namespace + name 作为key，存储ActionConfig
+                String key = namespace + actionConfig.getName();
+                this.actionConfigWithURI.put(key, actionConfig);
             }
         }
     }
@@ -59,12 +62,12 @@ public class StrutsConfigManager {
         }
     }
 
-    public ActionConfig getActionConfigByClassAndMethod(String className, String method) {
-        return actionConfigWithClassAndMethod.get(className + "#" + method);
+    public ActionConfig getActionConfigByURI(String uri) {
+        return actionConfigWithURI.get(uri);
     }
 
-    public ResultConfig getResultConfigByClassAndMethodAndReturnValue(String className, String method, String returnValue) {
-        ActionConfig actionConfig = getActionConfigByClassAndMethod(className, method);
+    public ResultConfig getResultConfigByURIReturnValue(String uri, String returnValue) {
+        ActionConfig actionConfig = getActionConfigByURI(uri);
         Map<String, ResultConfig> resultConfigMap = actionConfig.getResults();
         return resultConfigMap.get(returnValue);
     }
