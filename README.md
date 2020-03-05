@@ -46,9 +46,7 @@
 
 ```java
 <action name="list" class="" method="list">
-
     <result name="success">list.jsp</result>
-
 </action>
 <!-- 重定向 -->
 <action name="redirect" class="" method="redirect">
@@ -66,13 +64,9 @@
 <action name="downloadStream" class="" method="downloadStream">
     <result type="stream">
        <param name="contentType">application/vnd.ms-excel,charset=UTF-8</param>
-
        <param name="contentDisposition">attachment;fileName=${fileName}</param>
-
        <param name="inputName">inputStream</param>
-
        <param name="bufferSize">1024</param>
-
    </result>
 </action>
 
@@ -81,27 +75,17 @@
 
 <!-- 基于stream的ajax请求 -->
 <action name="ajaxStream" class="" method="ajaxStream">
-
      <result name="success" type="stream">
-
          <param name="contentType">application/json; charset=utf-8</param>
-
          <param name="inputName">ajax3Stream</param>
-
      </result>
-
 </action>
 
 <!-- 基于json-default的ajax请求 -->
 <action name="ajaxJsonDefault" class="" method="ajaxJsonDefault">
-
     <result name="success" type="json">
-
         <param name="includeProperties">name,sex</param>
-
         <param name="excludeNullProperties">true</param>
-
     </result>
-
 </action>
 ```
