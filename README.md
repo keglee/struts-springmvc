@@ -12,9 +12,8 @@
 
 我的雇主在服务器大面积被黑客入侵后，绝对将所有基于Struts2框架开发的系统，改造成SpringMVC。
 
-> 项目情况：上千个Action处理方法，且大部分业务逻辑在Action方法里 
-> 人员配置：8人
-> 改造时间：两个星期
+> 项目情况：上千个Action处理方法，且大部分业务逻辑在Action方法里 。同时存在人手不足，时间短的问题。
+> 
 > 方案：一个个Action类进行修改
 
 在闲时与一个同事沟通中他提到：“SpringMVC的请求是可配置，Struts2的请求也是可配置，那么只要将Struts2的配置解析成SpringMVC的配置，都不需要去修改Action类，即可完成迁移”。于是就有了这个项目。
@@ -57,7 +56,7 @@
 </action>
 <!-- 重定向Action -->
 <action name="redirectAction" class="" method="redirect">
-    <result name="success" type="redirectAction">list.jsp</result>
+    <result name="success" type="redirectAction">list.jsp</result>
 </action>
 
 <!-- 基于response的文件下载 -->
@@ -65,7 +64,7 @@
 
 <!-- 基于stream的文件下载 -->
 <action name="downloadStream" class="" method="downloadStream">
-    <result type="stream">
+    <result type="stream">
        <param name="contentType">application/vnd.ms-excel,charset=UTF-8</param>
 
        <param name="contentDisposition">attachment;fileName=${fileName}</param>
@@ -106,5 +105,3 @@
 
 </action>
 ```
-
-
