@@ -16,7 +16,7 @@
 > 
 > 方案：一个个Action类进行修改
 
-在闲时与一个同事沟通中他提到：“SpringMVC的请求是可配置，Struts2的请求也是可配置，那么只要将Struts2的配置解析成SpringMVC的配置，都不需要去修改Action类，即可完成迁移”。于是就有了这个项目。
+有没有这样一种方案：将Strtus2的Action配置解析成SpringMVC的配置，这样就可以在不修改Action类的情况下进行迁移。于是就有了这个项目
 
 ## Spring知识点
 
