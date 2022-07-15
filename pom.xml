@@ -13,7 +13,7 @@
         <struts.version>2.3.35</struts.version>
         <spring.version>4.3.25.RELEASE</spring.version>
         <servlet.version>3.1.0</servlet.version>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
     </properties>
     <dependencies>
         <dependency>
